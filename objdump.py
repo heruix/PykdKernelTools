@@ -109,11 +109,13 @@ def run():
 		dumpObjectTable(objtable_addr)
 
 def options():
-	if len(sys.argv) == 2 
-		if sys.argv[1] == '?':
-			useage()
-			return False
-	return True
+	try:
+		if len(sys.argv) == 2 
+			if sys.argv[1] == '?':
+				return False
+		return True
+	except: pass
+	return False
 
 def useage():
 	print("Prints all objects contained in the object table, along with the object statistics,"\
@@ -123,6 +125,8 @@ def init():
 	try:
 		if options():
 			run()
+		else:
+			useage()
 	except Exception as e: 
 		print("Exception: %s" % e)
 		print(traceback.format_exc())

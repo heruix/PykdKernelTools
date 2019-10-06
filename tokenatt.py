@@ -136,37 +136,41 @@ def run():
 		token_addr = getCurrProcTokenAddress() if token_addr is None else False
 		if token_addr is None: return
 	
-			# Create the token attribute structure at runtime 
-			# due to differences in processor architecture.
-			initTokenAttributeStruct()
+		# Create the token attribute structure at runtime 
+		# due to differences in processor architecture.
+		initTokenAttributeStruct()
 		printSecurityAttributes(token_addr, getSecurityAttributes(token_addr))
 	except:
 		print("Failed to retrieve token attributes.")
 
 def options():
-	if len(sys.argv) == 2: 
+	try:
+		if len(sys.argv) == 2: 
+		
+			if sys.argv[1] == '?':
+				return False
 	
-		if sys.argv[1] == '?':
-			useage()
-			return False
-
-		if isValidAddress(sys.argv[1]):
-			global token_addr
-			token_addr = int(sys.argv[1], 16)
-
-	return True
+				if isValidAddress(sys.argv[1]):
+					global token_addr
+					token_addr = int(sys.argv[1], 16)
+					return True
+	except: pass
+	return False
 
 def useage():
 	print("\nPrints the token attributes that are currently " \
 		"missing from the !token command.\n")
 
 	print("Optional Arguments:")
-	print("\t-t,--token\tAllows a token address to be supplied.\n")
+	print("\ttoken_address\tAllows a token address to be supplied.\n \
+		\t\t\tIf none is supplied, the current process' access token will be used.\n")
 
 def init():
 	try:
 		if options():
 			run()
+		else:
+			useage()
 	except Exception as e: 
 		print("Exception: %s" % e)
 		print(traceback.format_exc())

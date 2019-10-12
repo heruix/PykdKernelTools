@@ -14,11 +14,10 @@ def run():
 	if getNtDll() is None: return
 	
 	# Remove .exe from given process name.
-	if process_name.endswith(str_exe):
-		process_name = process_name.replace(str_exe, '')
-
+	process_name = removeExeFromPath(process_name)
+	
 	# Ensure the input doesn't end in 'exe'.
-	current_process_name = getCurrentProcessName().lower().replace(str_exe, '')
+	current_process_name = getCurrentProcessName().lower()
 
 	# Check if we're already in that process.
 	if process_name == current_process_name:

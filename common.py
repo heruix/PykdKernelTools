@@ -1,6 +1,7 @@
 #! python3
 from pykd import *
 import os
+import re
 
 nt = None
 ntdll = None
@@ -57,11 +58,19 @@ def formatFlags(valueList):
 		
 	return output
 	
-def getCurrentProcessName():
+def getCurrentProcessName(include_exe=False):
 	path = getProcessName(getCurrentProcess())
 	if path is None:
 		return None
-	return os.path.basename(path)
+	return removeExeFromPath(os.path.basename(path))
+
+def getCurrentProcessPath():
+	return getProcessPath(getCurrentProcess())
+
+def getCurrentPid():
+	eprocess_type = getNtDll().type("_EPROCESS")
+	eprocess = typedVar(eprocess_type, getCurrentProcess())
+	return int(eprocess.UniqueProcessId)
 
 def getAllActiveProcessAddresses():
 	eprocess_type = getNtDll().type("_EPROCESS")
@@ -84,12 +93,12 @@ def getProcessFromName(name):
 	return None
 
 def getProcessName(process_addr):
-	path = getProcessPathFromProcess(process_addr)
+	path = getProcessPath(process_addr)
 	if path == None:
 		return path
 	return os.path.basename(path)
 
-def getProcessPathFromProcess(process_addr):
+def getProcessPath(process_addr):
 	try:
 		eprocess = typedVar(getNtDll().type("_EPROCESS"), process_addr)
 
@@ -113,7 +122,8 @@ def getImageFileName(eprocess):
 	
 def getImageFilePointer(eprocess):
 	try:
-		imagefile = typedVar(getNtDll().type("_FILE_OBJECT"), eprocess.ImageFilePointer)
+		#imagefile = typedVar(getNtDll().type("_FILE_OBJECT"), eprocess.ImageFilePointer)
+		imagefile = getNtDll().typedVar("_FILE_OBJECT", eprocess.ImageFilePointer)
 
 		if eprocess.ImageFilePointer.getAddress() != 0:
 			unicode_filename = typedVar(getNtDll().type("_UNICODE_STRING"), 
@@ -121,3 +131,6 @@ def getImageFilePointer(eprocess):
 			return loadUnicodeString(unicode_filename)
 	except: pass
 	return None
+
+def removeExeFromPath(path):
+	return re.sub(".exe" + '$', '', path)

@@ -11,6 +11,9 @@ def callback():
 	process_name = getCurrentProcessName()
 	process_path = getCurrentProcessPath()
 
+	print(name.lower())
+	print(process_name)
+
 	if name.lower() is process_name:
 		return True
 
@@ -21,13 +24,24 @@ def run():
 	if getNtDll() is None:
 		return
 
-	setBp(int(break_addr, 16), callback)
+	break_addr_hex = int(break_addr, 16)
+	setBp(break_addr_hex, callback)
 
 	print("\nBreaking now will cancel the script.\n\
 		Waiting for {0} to hit {1}...\n".format(process_name, break_addr))
 	
 	go()
-	print("{0} has hit {1}.\n".format(process_name, break_addr))
+
+	symbol = None
+	try:
+		symbol = findSymbol(break_addr_hex, True)
+	except:
+		pass
+
+	print("\n{0} has hit {1} [0x{2}]\n".format(
+		process_name, 
+		symbol if symbol is not None else '???',
+		break_addr))
 
 def useage():
 	print("\nAllows you to set a breakpoint that only gets triggered " \

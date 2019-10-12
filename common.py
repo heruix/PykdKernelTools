@@ -134,3 +134,8 @@ def getImageFilePointer(eprocess):
 
 def removeExeFromPath(path):
 	return re.sub(".exe" + '$', '', path)
+
+def getSyscallAddress(syscall_number):
+	service_table = getNt().offset("KiServiceTable")
+	syscall_offset = ptrDWord(service_table + syscall_number * 0x4)
+	return service_table + (syscall_offset >> 4)

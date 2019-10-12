@@ -145,15 +145,18 @@ def run():
 
 def options():
 	try:
+		if len(sys.argv) == 1: 
+			return True
+
 		if len(sys.argv) == 2: 
 		
 			if sys.argv[1] == '?':
 				return False
 	
-				if isValidAddress(sys.argv[1]):
-					global token_addr
-					token_addr = int(sys.argv[1], 16)
-					return True
+			if isValidAddress(sys.argv[1]):
+				global token_addr
+				token_addr = int(sys.argv[1], 16)
+				return True
 	except: pass
 	return False
 

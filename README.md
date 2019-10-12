@@ -53,7 +53,7 @@ Gives you the resulting kernel function called to from a syscall.
 ## tokenatt.py
 **aka Token Attributes**
 
-Prints the token attributes that are currently missing from the !token command.
+Prints the token attributes that are currently missing from the `!token` command.
 
 ![alt text](https://github.com/TomCouser/PykdKernelTools/blob/master/images/tokenatt.png)
 
